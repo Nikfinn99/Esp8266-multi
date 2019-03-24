@@ -1,0 +1,21 @@
+[submodule ".piolibdeps/LED-Strip"]
+	path = .piolibdeps/LED-Strip
+	url = https://github.com/Nikfinn99/LED-Strip.git
+[submodule ".piolibdeps/IO-Interface"]
+	path = .piolibdeps/IO-Interface
+	url = https://github.com/Nikfinn99/IO-Interface.git
+[submodule ".piolibdeps/Filter"]
+	path = .piolibdeps/Filter
+	url = https://github.com/Nikfinn99/Filter.git
+[submodule ".piolibdeps/WiFiConn"]
+	path = .piolibdeps/WiFiConn
+	url = https://github.com/Nikfinn99/WiFiConn.git
+[submodule ".piolibdeps/Upload-OTA"]
+	path = .piolibdeps/Upload-OTA
+	url = https://github.com/Nikfinn99/Upload-OTA.git
+[submodule ".piolibdeps/SerialStream"]
+	path = .piolibdeps/SerialStream
+	url = https://github.com/Nikfinn99/SerialStream.git
+[submodule ".piolibdeps/MQTT_Client"]
+	path = .piolibdeps/MQTT_Client
+	url = https://github.com/Nikfinn99/MQTT_Client.git
