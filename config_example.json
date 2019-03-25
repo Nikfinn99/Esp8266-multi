@@ -1,41 +1,40 @@
 {
-  "lights": {
-    "tran_time": 750,
-    "devices": [
-      {
-        "name": "light_1",
-        "type": "neopixel",
-        "num_leds": 71,
-        "pins": [
-          5
-        ],
-        "color_correction": [
-          255,
-          215,
-          220
-        ],
-        "udp": {
-          "enable": true,
-          "num_leds": 113
-        }
-      },
-      {
-        "name": "light_2",
-        "type": "pwm",
-        "type_pwm": "rgb",
-        "pins": [
-          12,
-          14,
-          13
-        ],
-        "color_correction": [
-          255,
-          255,
-          255
-        ]
+  "lights": [
+    {
+      "name": "light_1",
+      "type": "neopixel",
+      "tran_time": 750,
+      "num_leds": 71,
+      "pins": [
+        5
+      ],
+      "color_correction": [
+        255,
+        215,
+        220
+      ],
+      "udp": {
+        "enable": true,
+        "num_leds": 113
       }
-    ]
-  },
+    },
+    {
+      "name": "light_2",
+      "type": "pwm",
+      "tran_time": 750,
+      "type_pwm": "rgb",
+      "pins": [
+        12,
+        14,
+        13
+      ],
+      "color_correction": [
+        255,
+        255,
+        255
+      ]
+    }
+  ],
   "other": [
     {
       "name": "ir",
