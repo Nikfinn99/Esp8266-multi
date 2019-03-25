@@ -68,10 +68,10 @@ void udpHandle() // parse packet and write to leds
                 Serial << "UDP-Packet size expected=" << _bufferSize << ", actual=" << bytes << "\n";
             }
         }
-    }
 
-    if (_udp_timeout + _udp_max_timeout < millis())
-    {
-        _udp_strip->setMode(LED_Strip::MODE_SINGLE);
-    }
+        if (_udp_timeout + _udp_max_timeout < millis())
+        {
+            _udp_strip->setMode(LED_Strip::MODE_SINGLE);
+        }
+    }// udp_enable
 }
