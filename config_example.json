@@ -1,0 +1,78 @@
+{
+  "lights": {
+    "tran_time": 750,
+    "devices": [
+      {
+        "name": "light_1",
+        "type": "neopixel",
+        "num_leds": 71,
+        "pins": [
+          5
+        ],
+        "color_correction": [
+          255,
+          215,
+          220
+        ],
+        "udp": {
+          "enable": true,
+          "num_leds": 113
+        }
+      },
+      {
+        "name": "light_2",
+        "type": "pwm",
+        "type_pwm": "rgb",
+        "pins": [
+          12,
+          14,
+          13
+        ],
+        "color_correction": [
+          255,
+          255,
+          255
+        ]
+      }
+    ]
+  },
+  "other": [
+    {
+      "name": "ir",
+      "type": "ir_send",
+      "pins": [
+        14
+      ]
+    }
+  ],
+  "mqtt": {
+    "topic": "esp1",
+    "server": "192.168.0.X MQTT_SERVER",
+    "user": "MQTT_USER",
+    "pw": "MQTT_PASSWD"
+  },
+  "ota": {
+    "name": "esp-test1",
+    "pw": ""
+  },
+  "events": [
+    {
+      "on": "any_light_on",
+      "event": {
+        "type": "gpout",
+        "pin": 12,
+        "level": 1
+      },
+      "delay": 0
+    },
+    {
+      "on": "all_lights_off",
+      "event": {
+        "type": "gpout",
+        "pin": 12,
+        "level": 0
+      },
+      "delay": 750
+    }
+  ]
+}
