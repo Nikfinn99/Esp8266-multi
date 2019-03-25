@@ -38,7 +38,14 @@ void setup()
 
   bootSaveMode();
 
-  loadConfig();
+  WiFiConn.connect();
+
+  bool config_loaded = loadConfig();
+  if (!config_loaded)
+  {
+    setupOTA(NULL, NULL, false);// setup ota without mdns
+  }
+
   serverInit();
 
   DEBUG_LED.off();
