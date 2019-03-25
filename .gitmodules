@@ -1,21 +1,21 @@
-[submodule ".piolibdeps/LED-Strip"]
-	path = .piolibdeps/LED-Strip
+[submodule "lib/LED-Strip"]
+	path = lib/LED-Strip
 	url = https://github.com/Nikfinn99/LED-Strip.git
-[submodule ".piolibdeps/IO-Interface"]
-	path = .piolibdeps/IO-Interface
+[submodule "lib/IO-Interface"]
+	path = lib/IO-Interface
 	url = https://github.com/Nikfinn99/IO-Interface.git
-[submodule ".piolibdeps/Filter"]
-	path = .piolibdeps/Filter
+[submodule "lib/Filter"]
+	path = lib/Filter
 	url = https://github.com/Nikfinn99/Filter.git
-[submodule ".piolibdeps/WiFiConn"]
-	path = .piolibdeps/WiFiConn
+[submodule "lib/WiFiConn"]
+	path = lib/WiFiConn
 	url = https://github.com/Nikfinn99/WiFiConn.git
-[submodule ".piolibdeps/Upload-OTA"]
-	path = .piolibdeps/Upload-OTA
+[submodule "lib/Upload-OTA"]
+	path = lib/Upload-OTA
 	url = https://github.com/Nikfinn99/Upload-OTA.git
-[submodule ".piolibdeps/SerialStream"]
-	path = .piolibdeps/SerialStream
+[submodule "lib/SerialStream"]
+	path = lib/SerialStream
 	url = https://github.com/Nikfinn99/SerialStream.git
-[submodule ".piolibdeps/MQTT_Client"]
-	path = .piolibdeps/MQTT_Client
+[submodule "lib/MQTT_Client"]
+	path = lib/MQTT_Client
 	url = https://github.com/Nikfinn99/MQTT_Client.git
