@@ -254,7 +254,7 @@ void serverInit()
         delay(100);
     });
     server.on("/name", HTTP_GET, []() {
-        server.send(200, "text/plain", server_name.c_str());
+        server.send(200, "text/plain", server_name);
     });
     //list directory
     server.on("/list", HTTP_GET, handleFileList);

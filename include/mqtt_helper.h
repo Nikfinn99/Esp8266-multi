@@ -11,10 +11,10 @@
 #include "define.h"
 #include "common_vars.h"
 
-void mqtt_dev_ir(const std::string &action, const std::string &payload);
-void mqtt_dev_light(const std::string &action, const std::string &payload, LED_Strip *light);
+void mqtt_dev_ir(const String &action, const String &payload);
+void mqtt_dev_light(const String &action, const String &payload, LED_Strip *light);
 
-void mqtt_callback(const std::string &device, const std::string &action, const std::string &payload)
+void mqtt_callback(const String &device, const String &action, const String &payload)
 {
     event_manager.triggerEvent("mqtt_callback");
 
@@ -39,7 +39,7 @@ void mqtt_callback(const std::string &device, const std::string &action, const s
     }
 }
 
-void mqtt_dev_ir(const std::string &action, const std::string &payload)
+void mqtt_dev_ir(const String &action, const String &payload)
 {
     if (payload.length() == 0) //abort if there is no payload
         return;
@@ -49,7 +49,7 @@ void mqtt_dev_ir(const std::string &action, const std::string &payload)
     if (action == "send" && ir_send)
     {
         DynamicJsonBuffer buffer;
-        JsonObject &root = buffer.parseObject(payload.c_str());
+        JsonObject &root = buffer.parseObject(payload);
 
         if (root.success())
         {
@@ -76,34 +76,37 @@ void mqtt_dev_ir(const std::string &action, const std::string &payload)
     }
 }
 
-void mqtt_dev_light(const std::string &action, const std::string &payload, LED_Strip *light)
+void mqtt_dev_light(const String &action, const String &payload, LED_Strip *light)
 {
+    // abort if light is nullptr
     if (!light)
-        return; // abort if light is nullptr
+        return;
 
-    if (payload.length() == 0) //abort if there is no payload
+    // abort if there is no payload
+    if (payload.length() == 0)
         return;
 
     event_manager.triggerEvent("mqtt_light_callback");
 
     if (action == "rgb") //rgb
     {
-        size_t firstCommaIndex = payload.find(',');
-        size_t secondCommaIndex = payload.find(',', firstCommaIndex + 1);
-        if (firstCommaIndex == std::string::npos || secondCommaIndex == std::string::npos)
+        int firstCommaIndex = payload.indexOf(',');
+        int secondCommaIndex = payload.indexOf(',', firstCommaIndex + 1);
+
+        if (firstCommaIndex < 0 || secondCommaIndex < 0)
         {
-            Serial.println("Invalid RGB String!");
+            Serial << "Invalid RGB String!" << endl;
         }
         else //both indexes were found
         {
-            std::string red = payload.substr(0, firstCommaIndex - 0);
-            std::string green = payload.substr(firstCommaIndex + 1, secondCommaIndex - (firstCommaIndex + 1));
-            std::string blue = payload.substr(secondCommaIndex + 1);
+            String red = payload.substring(0, firstCommaIndex);
+            String green = payload.substring(firstCommaIndex + 1, secondCommaIndex);
+            String blue = payload.substring(secondCommaIndex + 1);
 
             CRGB color;
-            color.r = atoi(red.c_str());
-            color.g = atoi(green.c_str());
-            color.b = atoi(blue.c_str());
+            color.r = red.toInt();
+            color.g = green.toInt();
+            color.b = blue.toInt();
 
             light->setColor(color);
 
@@ -125,7 +128,7 @@ void mqtt_dev_light(const std::string &action, const std::string &payload, LED_S
     }                         //power
     else if (action == "bri") //brightness
     {
-        light->setBrightness(atoi(payload.c_str()));
+        light->setBrightness(payload.toInt());
         event_manager.triggerEvent("light_bri_set");
     } //brightness
 }

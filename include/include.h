@@ -2,7 +2,6 @@
 #define INCLUDE_H
 
 /*default libs*/
-#include <cstring>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -14,8 +13,6 @@
 #include <ArduinoJson.h>
 #include <IRsend.h>
 #include <IRutils.h>
-#include <string>
-#include <array>
 #include <vector>
 
 /*Wifi Manager*/
