@@ -101,6 +101,7 @@ void loadOta(JsonObject &ota)
         Serial << "OTA params not found!\n"
                << "Setting up OTA without params\n";
     }
+    Serial << "set up OTA" << endl;
 }
 
 void loadMqtt(JsonObject &mqtt)
@@ -117,11 +118,13 @@ void loadMqtt(JsonObject &mqtt)
         mqtt_client->setCallback(mqtt_callback);
 
         mqtt_client->reconnect();
+        Serial << "set up MQTT" << endl;
     }
 }
 
 void loadEvents(JsonArray &events)
 {
+    Serial << "setting up " << events.size() << " events: ";
     for (uint8_t i = 0; i < events.size(); i++)
     {
         JsonObject &event = events[i];
@@ -136,11 +139,14 @@ void loadEvents(JsonArray &events)
             int level = evt["level"];
             event_manager.attachEvent(on, new EventGPIO(delay, pin, level));
         }
+        Serial << on << comma;
     }
+    Serial << endl;
 }
 
 void addOtherDevices(JsonArray &devices)
 {
+    Serial << "setting up " << devices.size() << " other devices: ";
     for (uint8_t i = 0; i < devices.size(); i++)
     {
         JsonObject &device = devices[i];
@@ -156,11 +162,14 @@ void addOtherDevices(JsonArray &devices)
                 ir_send->begin();
             }
         }
+        Serial << type << comma;
     }
+    Serial << endl;
 }
 
 void addLights(JsonArray &json_lights)
 {
+    Serial << "setting up " << json_lights.size() << " lights: ";
     for (uint8_t i = 0; i < json_lights.size(); i++)
     {
         JsonObject &light = json_lights[i];
@@ -234,5 +243,7 @@ void addLights(JsonArray &json_lights)
             lights.push_back(str);       // append to vectors containing all lights
             light_names.push_back(name); // corresponding names
         }
+        Serial << name << ":" << type << comma;
     }
+    Serial << endl;
 }
