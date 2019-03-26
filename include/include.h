@@ -14,6 +14,7 @@
 #include <IRsend.h>
 #include <IRutils.h>
 #include <vector>
+#include <DHT.h>
 
 /*Wifi Manager*/
 #include <DNSServer.h>

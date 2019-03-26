@@ -1,7 +1,7 @@
 #pragma once
 
 #include <MQTT_Client.h>
-#include "EventManager.h"
+#include <EventManager.h>
 
 //VARS
 MQTT_Client *mqtt_client;

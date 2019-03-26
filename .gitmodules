@@ -19,3 +19,9 @@
 [submodule "lib/MQTT_Client"]
 	path = lib/MQTT_Client
 	url = https://github.com/Nikfinn99/MQTT_Client.git
+[submodule "lib/Unified-Sensors"]
+	path = lib/Unified-Sensors
+	url = https://github.com/Nikfinn99/Unified-Sensors.git
+[submodule "lib/EventManager"]
+	path = lib/EventManager
+	url = https://github.com/Nikfinn99/EventManager.git
