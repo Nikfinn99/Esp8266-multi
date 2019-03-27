@@ -33,6 +33,15 @@
         255,
         255
       ]
+    },
+    {
+      "name": "light_3",
+      "type": "pwm",
+      "tran_time": 750,
+      "type_pwm": "bri",
+      "pins": [
+        12
+      ]
     }
   ],
   "other": [
@@ -47,6 +56,7 @@
   "sensors": [
     {
       "type": "dht22",
+      "interval" : 10,
       "pins": [
         5
       ]
@@ -56,7 +66,8 @@
     "topic": "esp1",
     "server": "192.168.0.X MQTT_SERVER",
     "user": "MQTT_USER",
-    "pw": "MQTT_PASSWD"
+    "pw": "MQTT_PASSWD",
+    "debug": true
   },
   "ota": {
     "name": "esp-test1",

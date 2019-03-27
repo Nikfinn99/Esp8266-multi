@@ -121,10 +121,12 @@ void loadMqtt(JsonObject &mqtt)
     const char *server = mqtt["server"];
     const char *user = mqtt["user"];
     const char *pw = mqtt["pw"];
+    bool debug = mqtt["debug"];
+    
     if (topic && server && user && pw)
     {
         mqtt_client = new MQTT_Client(server, user, pw);
-        mqtt_client->enableDebug(1);
+        mqtt_client->enableDebug(debug);
         mqtt_client->setTopic(topic);
         mqtt_client->setCallback(mqtt_callback);
 
@@ -268,7 +270,7 @@ void addLights(JsonArray &json_lights)
 
 void addSensors(JsonArray &p_sensors)
 {
-    Serial << "setting up " << p_sensors.size() << "sensors: ";
+    Serial << "setting up " << p_sensors.size() << " sensors: ";
     for (uint8_t i = 0; i < p_sensors.size(); i++)
     {
         // placeholder object for unified sensor
@@ -279,19 +281,29 @@ void addSensors(JsonArray &p_sensors)
 
         // get sensor information
         const char *type = json_sensor["type"];
+        int interval = json_sensor["interval"].as<int>() * 1000; // interval from seconds to ms
         JsonArray &pins = json_sensor["pins"];
 
-        if (strcmp(type, "dht22") == 0) // DHT 22
+        Serial << type << comma;
+
+        if (strcmp(type, "dht22") == 0 && pins.size() == 1) // DHT 22
         {
             // get pin from json
             int pin = pins[0];
 
+            // set to default if not defined
+            if(!interval){
+                interval = DHT_MEAS_INTERVAL;
+            }
+
             // create new DHT22 sensor
-            sensor = new DHT_Sensor(pin, DHT22);
+            sensor = new DHT_Sensor(pin, DHT22, interval);
         }
 
         if (sensor)
         {
+            // attach mqtt server to sensor
+            sensor->setClient(mqtt_client);
             // add new sensor to vector
             sensors.push_back(sensor);
         }
