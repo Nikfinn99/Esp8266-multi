@@ -1,8 +1,9 @@
 #pragma once
 
 #include <WiFiUdp.h>
-#include <LED_Str.h>
 #include <SerialStream.h>
+
+#include <Adressable_LED_Strip.h>
 
 WiFiUDP _udp;
 Adressable_LED_Strip *_udp_strip;
@@ -71,7 +72,7 @@ void udpHandle() // parse packet and write to leds
 
         if (_udp_timeout + _udp_max_timeout < millis())
         {
-            _udp_strip->setMode(LED_Strip::MODE_SINGLE);
+            _udp_strip->setMode(LED_Strip::MODE::SINGLE);
         }
     }// udp_enable
 }

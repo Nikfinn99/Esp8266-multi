@@ -2,13 +2,10 @@
 #define MQTT_HELPER_H_
 
 #include <ArduinoJson.h>
-#include <string>
 #include <IRsend.h>
-#include <FastLED.h>
 
-#include <LED_Str.h>
+#include <LED_Strip.h>
 
-#include "define.h"
 #include "common_vars.h"
 
 void mqtt_dev_ir(const String &action, const String &payload);

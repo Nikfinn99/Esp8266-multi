@@ -3,6 +3,9 @@
 #include <MQTT_Client.h>
 #include <EventManager.h>
 #include <ISensor.h>
+#include <IRsend.h>
+#include <LED_Strip.h>
+#include <vector>
 
 //VARS
 MQTT_Client *mqtt_client;

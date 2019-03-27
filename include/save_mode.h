@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
-#include <user_config.h>
+#include <user_interface.h> // https://github.com/esp8266/Arduino actually tools/sdk/include
+
 #include <SerialStream.h>
 #include <WiFiConn.h>
 #include <ArduinoOTA.h>

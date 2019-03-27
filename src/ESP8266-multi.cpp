@@ -1,7 +1,9 @@
 #include <Arduino.h>
-#include "include.h"
-#include <user_interface.h> // https://github.com/esp8266/Arduino actually tools/sdk/include
+
 #include "save_mode.h"
+#include "http_server.h"
+#include "config_load.h"
+#include "common_vars.h"
 
 void loopDelay(unsigned int delay)
 {
@@ -43,7 +45,7 @@ void setup()
   bool config_loaded = loadConfig();
   if (!config_loaded)
   {
-    setupOTA(NULL, NULL, false);// setup ota without mdns
+    setupOTA(NULL, NULL, false); // setup ota without mdns
   }
 
   serverInit();
@@ -56,6 +58,12 @@ void setup()
 void loop()
 {
   loopDelay(10);
+
+  // UPDATE all SENSORS
+  for (ISensor *sensor : sensors)
+  {
+    sensor->update();
+  }
 
   // UPDATE all LED Strips
   bool power = false;
@@ -75,11 +83,4 @@ void loop()
     event_manager.abortEvent("any_light_on");
     event_manager.triggerEvent("all_lights_off");
   }
-
-  // UPDATE all SENSORS
-  for(ISensor* sensor : sensors)
-  {
-    sensor->update();
-  }
-  
 }

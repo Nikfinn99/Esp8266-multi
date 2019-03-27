@@ -2,13 +2,19 @@
 #pragma once
 
 #include <Arduino.h>
+
 #include <FS.h>
 #include <ArduinoJson.h>
-#include <WiFiConn.h>
 #include <Upload-OTA.h>
-#include <SerialStream.h>
 #include <WiFiManager.h>
 #include <DHT_Sensor.h>
+#include <SerialStream.h>
+
+#include <FASTLED_Strip.h>
+#include <PWM_RGB_LED_Strip.h>
+#include <PWM_Dimmable_LED_Strip.h>
+
+#include "mqtt_helper.h"
 #include "common_vars.h"
 #include "udp_lights.h"
 
@@ -73,22 +79,22 @@ bool loadConfig(const char *path = nullptr)
 void parseConfig(JsonObject &json)
 {
     // setup OTA
-    loadOta(json["ota"].as<JsonObject>());
+    loadOta(json["ota"]);
 
     // setup MQTT
-    loadMqtt(json["mqtt"].as<JsonObject>());
+    loadMqtt(json["mqtt"]);
 
     // setup LIGHTS
-    addLights(json["lights"].as<JsonArray>());
+    addLights(json["lights"]);
 
     // setup DEVICES
-    addOtherDevices(json["other"].as<JsonArray>());
+    addOtherDevices(json["other"]);
 
     // setup SENSORS
-    addSensors(json["sensors"].as<JsonArray>());
+    addSensors(json["sensors"]);
 
     // setup EVENTS
-    loadEvents(json["events"].as<JsonArray>());
+    loadEvents(json["events"]);
 }
 
 void loadOta(JsonObject &ota)
@@ -187,9 +193,14 @@ void addLights(JsonArray &json_lights)
         if (strcmp(type, "pwm") == 0) // ANALOG WRITE PWM
         {
             const char *type_pwm = light["type_pwm"];
-            if (strcmp(type_pwm, "rgb") == 0 && pins.size() == 3) // ANALOG RGB
+
+            if (strcmp(type_pwm, "rgb") == 0 && pins.size() == 3) // PWM RGB
             {
-                str = new PWM_LED_Strip(pins[0], pins[1], pins[2]); // new pwm led strip
+                str = new PWM_RGB_LED_Strip(pins[0], pins[1], pins[2]);
+            }
+            else if (strcmp(type_pwm, "bri") == 0 && pins.size() == 1) // PWM Dimmable
+            {
+                str = new PWM_Dimmable_LED_Strip(pins[0].as<int>());
             }
         }
         else if (strcmp(type, "neopixel") == 0) // FASTLED WS2812
@@ -217,17 +228,19 @@ void addLights(JsonArray &json_lights)
                 str = new FASTLED_Strip<WS2812, 15, GRB>(num_leds); // GPIO 15
                 break;
             default:
-                Serial << pin << " is not a Valid pin for NEOPIXEL\n";
+                Serial << pin << " is not a Valid pin for NEOPIXEL" << endl;
             }
 
             // UDP Hyperion enable
             JsonObject &udp = light["udp"];
             if (udp.success())
             {
-                Serial << "Loading UDP\n";
+                Serial << "Loading UDP" << endl;
+
                 int udp_num_leds = udp["num_leds"];
                 int udp_timeout = udp["timeout"];
-                Serial << "Udp num leds:" << udp_num_leds << "\n";
+
+                Serial << "Udp num leds:" << udp_num_leds << endl;
                 udpSetStrip((Adressable_LED_Strip *)str, udp_num_leds);
                 udpInit(udp_timeout);
             }
@@ -266,7 +279,7 @@ void addSensors(JsonArray &p_sensors)
 
         // get sensor information
         const char *type = json_sensor["type"];
-        JsonArray& pins = json_sensor["pins"];
+        JsonArray &pins = json_sensor["pins"];
 
         if (strcmp(type, "dht22") == 0) // DHT 22
         {
