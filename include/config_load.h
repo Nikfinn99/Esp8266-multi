@@ -8,6 +8,7 @@
 #include <Upload-OTA.h>
 #include <SerialStream.h>
 #include <WiFiManager.h>
+#include <DHT_Sensor.h>
 #include "common_vars.h"
 #include "udp_lights.h"
 
@@ -17,6 +18,7 @@ void addOtherDevices(JsonArray &device);
 void loadEvents(JsonArray &events);
 void loadMqtt(JsonObject &mqtt);
 void loadOta(JsonObject &ota);
+void addSensors(JsonArray &p_sensors);
 
 bool loadConfig(const char *path = nullptr)
 {
@@ -81,6 +83,9 @@ void parseConfig(JsonObject &json)
 
     // setup DEVICES
     addOtherDevices(json["other"].as<JsonArray>());
+
+    // setup SENSORS
+    addSensors(json["sensors"].as<JsonArray>());
 
     // setup EVENTS
     loadEvents(json["events"].as<JsonArray>());
@@ -244,6 +249,37 @@ void addLights(JsonArray &json_lights)
             light_names.push_back(name); // corresponding names
         }
         Serial << name << ":" << type << comma;
+    }
+    Serial << endl;
+}
+
+void addSensors(JsonArray &p_sensors)
+{
+    Serial << "setting up " << p_sensors.size() << "sensors: ";
+    for (uint8_t i = 0; i < p_sensors.size(); i++)
+    {
+        ISensor *sensor;
+
+        // get json object from array
+        JsonObject &json_sensor = p_sensors[i];
+
+        // get sensor type
+        const char *type = json_sensor["type"];
+
+        if (strcmp(type, "dht22") == 0) // DHT 22
+        {
+            // get pin from json
+            int pin = json_sensor["pin"];
+
+            // create new DHT22 sensor
+            sensor = new DHT_Sensor(pin, DHT22);
+        }
+
+        if (sensor)
+        {
+            // add new sensor to vector
+            sensors.push_back(sensor);
+        }
     }
     Serial << endl;
 }

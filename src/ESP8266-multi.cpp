@@ -75,4 +75,11 @@ void loop()
     event_manager.abortEvent("any_light_on");
     event_manager.triggerEvent("all_lights_off");
   }
+
+  // UPDATE all SENSORS
+  for(ISensor* sensor : sensors)
+  {
+    sensor->update();
+  }
+  
 }
