@@ -37,10 +37,18 @@
   ],
   "other": [
     {
-      "name": "ir",
       "type": "ir_send",
+      "name": "ir",
       "pins": [
         14
+      ]
+    }
+  ],
+  "sensors": [
+    {
+      "type": "dht22",
+      "pins": [
+        5
       ]
     }
   ],

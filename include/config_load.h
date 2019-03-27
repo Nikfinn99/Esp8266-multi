@@ -258,18 +258,20 @@ void addSensors(JsonArray &p_sensors)
     Serial << "setting up " << p_sensors.size() << "sensors: ";
     for (uint8_t i = 0; i < p_sensors.size(); i++)
     {
+        // placeholder object for unified sensor
         ISensor *sensor;
 
         // get json object from array
         JsonObject &json_sensor = p_sensors[i];
 
-        // get sensor type
+        // get sensor information
         const char *type = json_sensor["type"];
+        JsonArray& pins = json_sensor["pins"];
 
         if (strcmp(type, "dht22") == 0) // DHT 22
         {
             // get pin from json
-            int pin = json_sensor["pin"];
+            int pin = pins[0];
 
             // create new DHT22 sensor
             sensor = new DHT_Sensor(pin, DHT22);
