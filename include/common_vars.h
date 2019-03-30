@@ -1,5 +1,6 @@
 #pragma once
 
+#define MQTT_MAX_PACKET_SIZE 512
 #include <MQTT_Client.h>
 #include <EventManager.h>
 #include <ISensor.h>
