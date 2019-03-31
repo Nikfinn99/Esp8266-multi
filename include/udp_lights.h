@@ -6,7 +6,7 @@
 #include <Adressable_LED_Strip.h>
 
 WiFiUDP _udp;
-Adressable_LED_Strip *_udp_strip;
+Adressable_LED_Strip *_udp_strip = nullptr;
 byte *_udpBuffer;
 uint16_t _bufferSize;
 uint16_t _ledCount;
@@ -17,21 +17,29 @@ int _udp_max_timeout = 0;
 
 void udpInit(int timeout) // create new udp object and init with port
 {
-    _udp = WiFiUDP();
-    _udp.begin(_udpPort);
-    _udp_enabled = true;
-    _udp_max_timeout = timeout;
+    // only allow init once
+    if (!_udp_enabled && _udp_strip)
+    {
+        _udp = WiFiUDP();
+        _udp.begin(_udpPort);
+        _udp_enabled = true;
+        _udp_max_timeout = timeout;
+    }
 }
 
-void udpSetStrip(Adressable_LED_Strip *strip, int num_lights)
+void udpSetStrip(Adressable_LED_Strip *strip)
 {
-    _udp_strip = strip;
+    // only allow init once
+    if (!_udp_enabled)
+    {
+        _udp_strip = strip;
 
-    _ledCount = num_lights;      // get number of lights from input instead of strip
-    _bufferSize = _ledCount * 3; //3 bytes per LED
+        _ledCount = strip->getNumLeds(); // get number of lights from input instead of strip
+        _bufferSize = _ledCount * 3;     //3 bytes per LED
 
-    _udpBuffer = new byte[_bufferSize + 1];
-    _udpBuffer[_bufferSize] = 0;
+        _udpBuffer = new byte[_bufferSize + 1];
+        _udpBuffer[_bufferSize] = 0;
+    }
 }
 
 void udpHandle() // parse packet and write to leds
@@ -70,9 +78,9 @@ void udpHandle() // parse packet and write to leds
             }
         }
 
-        if (_udp_timeout + _udp_max_timeout < millis())
+        if (millis() > _udp_timeout + _udp_max_timeout)
         {
             _udp_strip->setMode(LED_Strip::MODE::SINGLE);
         }
-    }// udp_enable
+    } // udp_enable
 }

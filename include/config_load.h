@@ -122,7 +122,7 @@ void loadMqtt(JsonObject &mqtt)
     const char *user = mqtt["user"];
     const char *pw = mqtt["pw"];
     bool debug = mqtt["debug"];
-    
+
     if (topic && server && user && pw)
     {
         mqtt_client = new MQTT_Client(server, user, pw);
@@ -237,13 +237,16 @@ void addLights(JsonArray &json_lights)
             JsonObject &udp = light["udp"];
             if (udp.success())
             {
-                Serial << "Loading UDP" << endl;
+                Serial << "Loading UDP, ";
 
-                int udp_num_leds = udp["num_leds"];
                 int udp_timeout = udp["timeout"];
-
-                Serial << "Udp num leds:" << udp_num_leds << endl;
-                udpSetStrip((Adressable_LED_Strip *)str, udp_num_leds);
+                if (!udp_timeout)
+                {
+                    // 20 secs as default of not set by user
+                    udp_timeout = 20000;
+                }
+                
+                udpSetStrip((Adressable_LED_Strip *)str);
                 udpInit(udp_timeout);
             }
         }
@@ -292,7 +295,8 @@ void addSensors(JsonArray &p_sensors)
             int pin = pins[0];
 
             // set to default if not defined
-            if(!interval){
+            if (!interval)
+            {
                 interval = DHT_MEAS_INTERVAL;
             }
 

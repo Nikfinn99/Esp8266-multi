@@ -15,7 +15,7 @@
       ],
       "udp": {
         "enable": true,
-        "num_leds": 113
+        "timeout": 30000
       }
     },
     {
