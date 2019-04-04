@@ -7,7 +7,11 @@
 #include <ArduinoJson.h>
 #include <Upload-OTA.h>
 #include <WiFiManager.h>
+
 #include <DHT_Sensor.h>
+#include <Button_Sensor.h>
+#include <Uptime_Sensor.h>
+
 #include <SerialStream.h>
 
 #include <FASTLED_Strip.h>
@@ -146,13 +150,13 @@ void loadEvents(JsonArray &events)
 
         JsonObject &evt = event["event"];
         const char *type = evt["type"];
-        if (strlen(type) != 0 && strlen(on) != 0 && strcmp(type, "gpout") == 0) // if valid type and onaction and type == gpout
+        if (type && on && strcmp(type, "gpout") == 0) // if valid type and onaction and type == gpout
         {
             int pin = evt["pin"];
             int level = evt["level"];
             event_manager.attachEvent(on, new EventGPIO(delay, pin, level));
         }
-        Serial << on << comma;
+        Serial << on << ":" << type << comma;
     }
     Serial << endl;
 }
@@ -245,7 +249,7 @@ void addLights(JsonArray &json_lights)
                     // 20 secs as default of not set by user
                     udp_timeout = 20000;
                 }
-                
+
                 udpSetStrip((Adressable_LED_Strip *)str);
                 udpInit(udp_timeout);
             }
@@ -274,6 +278,7 @@ void addLights(JsonArray &json_lights)
 void addSensors(JsonArray &p_sensors)
 {
     Serial << "setting up " << p_sensors.size() << " sensors: ";
+
     for (uint8_t i = 0; i < p_sensors.size(); i++)
     {
         // placeholder object for unified sensor
@@ -289,7 +294,7 @@ void addSensors(JsonArray &p_sensors)
 
         Serial << type << comma;
 
-        if (strcmp(type, "dht22") == 0 && pins.size() == 1) // DHT 22
+        if (strcmp(type, "dht22") == 0 && pins.size() == 1) //----------DHT 22
         {
             // get pin from json
             int pin = pins[0];
@@ -297,11 +302,45 @@ void addSensors(JsonArray &p_sensors)
             // set to default if not defined
             if (!interval)
             {
-                interval = DHT_MEAS_INTERVAL;
+                // create new DHT22 sensor with default interval
+                sensor = new DHT_Sensor(pin, DHT22);
             }
+            else
+            {
+                // create new DHT22 sensor with user interval
+                sensor = new DHT_Sensor(pin, DHT22, interval);
+            }
+        }
+        else if (strcmp(type, "button") == 0) //-------------------------BUTTON
+        {
+            int pin = pins[0];
+            bool invert = json_sensor["invert"];
+            const char *topic = json_sensor["topic"];
 
-            // create new DHT22 sensor
-            sensor = new DHT_Sensor(pin, DHT22, interval);
+            // check if topic string is empty
+            if (!topic)
+            {
+                // create new Button Sensor with default topic
+                sensor = new Button_Sensor(pin, invert);
+            }
+            else
+            {
+                // create new Button Sensor with user topic
+                sensor = new Button_Sensor(topic, pin, invert);
+            }
+        }
+        else if (strcmp(type, "uptime") == 0) //-------------------------UPTIME
+        {
+            if (!interval)
+            {
+                // create new UPTIME sensor with default interval
+                sensor = new Uptime_Sensor();
+            }
+            else
+            {
+                // create new UPTIME sensor with user interval
+                sensor = new Uptime_Sensor(interval);
+            }
         }
 
         if (sensor)
