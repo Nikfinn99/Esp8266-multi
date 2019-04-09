@@ -20,7 +20,6 @@ void udpInit(int timeout) // create new udp object and init with port
     // only allow init once
     if (!_udp_enabled && _udp_strip)
     {
-        _udp = WiFiUDP();
         _udp.begin(_udpPort);
         _udp_enabled = true;
         _udp_max_timeout = timeout;

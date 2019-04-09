@@ -10,7 +10,7 @@ void loopDelay(unsigned int delay)
   unsigned long start = millis();
   while (millis() <= start + delay)
   {
-    WiFiConn.checkConnection();
+    WiFiConn.checkConnection(); // reconnect to wifi if connection lost
 
     ArduinoOTA.handle();
 
@@ -23,9 +23,9 @@ void loopDelay(unsigned int delay)
 
     serverHandleClient(); // HANDLE FILE SERVER
 
-    udpHandle();
+    udpHandle(); // handle light control by udp
 
-    yield();
+    yield(); // dont crash if loop is taking long
   }
 }
 
@@ -34,7 +34,7 @@ void setup()
 {
   DEBUG_LED.on();
 
-  Serial.begin(115200UL, SERIAL_8N1, SERIAL_TX_ONLY, 1);
+  Serial.begin(115200);
   Serial.print("//garbage");
   Serial.print("\n\n---Setup START ---\n\n");
 
@@ -57,30 +57,34 @@ void setup()
 /*LOOP*/
 void loop()
 {
+  // update sensors and lights only every 10 milliseconds
   loopDelay(10);
 
-  // UPDATE all SENSORS
-  for (ISensor *sensor : sensors)
-  {
-    sensor->update();
+  { // UPDATE all SENSORS
+    for (ISensor *sensor : sensors)
+    {
+      sensor->update();
+    }
   }
 
-  // UPDATE all LED Strips
-  bool power = false;
-  for (LED_Strip *str : lights)
-  {
-    str->update();
-    power |= str->getPower();
-  }
+  { // UPDATE all LED Strips
+    bool power = false;
+    for (LED_Strip *str : lights)
+    {
+      str->update();
+      power |= str->getPower();
+    }
 
-  if (power)
-  {
-    event_manager.abortEvent("all_lights_off");
-    event_manager.triggerEvent("any_light_on");
-  }
-  else
-  {
-    event_manager.abortEvent("any_light_on");
-    event_manager.triggerEvent("all_lights_off");
+    // trigger corresponding events depending on power state
+    if (power)
+    {
+      event_manager.abortEvent("all_lights_off");
+      event_manager.triggerEvent("any_light_on");
+    }
+    else
+    {
+      event_manager.abortEvent("any_light_on");
+      event_manager.triggerEvent("all_lights_off");
+    }
   }
 }
