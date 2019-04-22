@@ -60,9 +60,7 @@ bool loadConfig(const char *path = nullptr)
     // Allocate a buffer to store contents of the file.
     std::unique_ptr<char[]> buf(new char[size]);
 
-    // We don't use String here because ArduinoJson library requires the input
-    // buffer to be mutable. If you don't use ArduinoJson, you may as well
-    // use configFile.readString instead.
+    // store contents of config file in buffer
     configFile.readBytes(buf.get(), size);
 
     DynamicJsonBuffer jsonBuffer(1024);
