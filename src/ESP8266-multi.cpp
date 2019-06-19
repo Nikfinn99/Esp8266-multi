@@ -32,7 +32,8 @@ void loopDelay(unsigned int delay)
 /*SETUP*/
 void setup()
 {
-  DEBUG_LED.on();
+  //DEBUG_LED.on();
+  DEBUG_LED.off();
 
   Serial.begin(115200);
   Serial.print("//garbage");
